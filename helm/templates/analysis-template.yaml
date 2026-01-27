@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: canary-smoke-test
+spec:
+  metrics:
+  - name: http-health-check
+    interval: 1m
+    failureLimit: 1
+    provider:
+      job:
+        spec:
+          backoffLimit: 0
+          template:
+            spec:
+              restartPolicy: Never
+              containers:
+              - name: smoke-test
+                image: curlimages/curl:8.5.0
+                command: ["sh", "-c"]
+                args:
+                  - |
+                    echo "Checking canary health endpoint"
+                    curl -sf http://checkout-canary/health
