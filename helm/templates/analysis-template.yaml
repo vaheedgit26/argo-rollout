@@ -21,4 +21,4 @@ spec:
                 args:
                   - |
                     echo "Checking canary health endpoint"
-                    curl -sf http://checkout-canary/health
+                    curl -sf http://expense-frontend-canary/nginx-health
