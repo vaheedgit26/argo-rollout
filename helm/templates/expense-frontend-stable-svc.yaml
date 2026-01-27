@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: expense-frontend-stable
+  name: expense-frontend-stable-svc
   labels:
     app: expense-frontend
     tier: frontend
