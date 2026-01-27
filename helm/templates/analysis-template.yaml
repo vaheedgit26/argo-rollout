@@ -13,6 +13,7 @@ spec:
           backoffLimit: 0
           template:
             spec:
+              activeDeadlineSeconds: 30
               restartPolicy: Never
               containers:
               - name: smoke-test
