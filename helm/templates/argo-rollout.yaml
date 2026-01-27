@@ -53,6 +53,7 @@ spec:
           timeoutSeconds: 5
           failureThreshold: 3
 
+  
   strategy:
     canary:
       stableService: expense-frontend-stable-svc
@@ -68,8 +69,12 @@ spec:
       - analysis:
           templates:
           - templateName: canary-smoke-test
-
+      - pause: { duration: 2m }
+          
       - setWeight: 60
+          templates:
+          - templateName: canary-smoke-test
       - pause: { duration: 5m }
 
       - setWeight: 100
+      
