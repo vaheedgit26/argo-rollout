@@ -1,0 +1,75 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: expense-frontend-rollout
+  labels:
+    app: expense-frontend
+    tier: frontend
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  revisionHistoryLimit: 3
+
+  selector:
+    matchLabels:
+      app: expense-frontend
+      tier: frontend
+
+  template:
+    metadata:
+      labels:
+        app: expense-frontend
+        tier: frontend
+    spec:
+      containers:
+      - name: expense-frontend-cont
+        image: "{{ .Values.image.imageName }}:{{ .Values.image.imageVersion }}"
+        ports:
+        - name: frontend
+          containerPort: 8080
+
+        startupProbe:                
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 12
+            
+        readinessProbe:
+          httpGet:
+            path: /nginx-health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 3
+            
+        livenessProbe:
+          httpGet:
+            path: /nginx-health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+  strategy:
+    canary:
+      stableService: expense-frontend-stable
+      canaryService: expense-frontend-canary
+      maxSurge: 1
+      maxUnavailable: 0
+
+      steps:
+      - setWeight: 10
+      - pause: { duration: 2m }
+
+      - setWeight: 30
+      - analysis:
+          templates:
+          - templateName: canary-smoke-test
+
+      - setWeight: 60
+      - pause: { duration: 5m }
+
+      - setWeight: 100
