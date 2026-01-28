@@ -2,8 +2,8 @@ project: expense
 component: frontend
 
 image:
-  imageName: vaheeddockerhub/expense-frontend
-  imageVersion: 2fd088e
+  imageName: nginx
+  imageVersion: latest
   
 deployment:
   replicas: 1
