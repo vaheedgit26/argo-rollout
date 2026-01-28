@@ -20,8 +20,9 @@ data:
             # Proxy Pass to our Application
             location /api/ {
 
-                #proxy_pass         http://expense-backend:8080/;    # backend service name:port
+                # proxy_pass         http://expense-backend:8080/;    # backend service name:port
                 proxy_pass         http://localhost:8080/;
+                
                 proxy_redirect     off;
                 proxy_set_header   Host $host;
                 proxy_set_header   X-Real-IP $remote_addr;
