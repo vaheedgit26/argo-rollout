@@ -5,7 +5,8 @@ metadata:
 spec:
   metrics:
   - name: http-health-check
-    interval: 1m
+    count: 3
+    interval: 30s
     failureLimit: 1
     provider:
       job:
