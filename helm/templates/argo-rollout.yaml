@@ -37,7 +37,7 @@ spec:
             
         readinessProbe:
           httpGet:
-            path: /nginx-health
+            path: /
             port: 80
           initialDelaySeconds: 0    #15
           periodSeconds: 5
@@ -46,7 +46,7 @@ spec:
             
         livenessProbe:
           httpGet:
-            path: /nginx-health
+            path: /
             port: 80
           initialDelaySeconds: 30
           periodSeconds: 10
