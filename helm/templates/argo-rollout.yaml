@@ -25,11 +25,11 @@ spec:
         image: "{{ .Values.image.imageName }}:{{ .Values.image.imageVersion }}"
         ports:
         - name: frontend
-          containerPort: 8080
+          containerPort: 80
 
         startupProbe:                
           tcpSocket:
-            port: 8080
+            port: 80
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 5
@@ -38,7 +38,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /nginx-health
-            port: 8080
+            port: 80
           initialDelaySeconds: 0    #15
           periodSeconds: 5
           timeoutSeconds: 5
@@ -47,7 +47,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /nginx-health
-            port: 8080
+            port: 80
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
