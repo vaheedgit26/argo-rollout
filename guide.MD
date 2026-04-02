@@ -1,4 +1,34 @@
-## Install Argo Rollouts
+## 🚀 🔷 FULL ARCHITECTURE (END-TO-END)
+
+Perfect — let’s build a production-grade, end-to-end GitOps system with:  
+- Canary deployments   
+- Auto rollback  
+- GitHub Actions CI  
+- GitOps repo updates  
+- Sync back to Git after rollback   
+This is exactly how top companies design safe delivery systems 🔥   
+```text
+Developer push
+   ↓
+GitHub Actions (CI)
+   ↓
+Build + Push Image (ECR)
+   ↓
+Update GitOps repo (dev)
+   ↓
+ArgoCD sync
+   ↓
+Argo Rollouts (canary)
+   ↓
+Prometheus checks metrics
+   ↓
+✅ Success → promote
+❌ Failure → auto rollback
+   ↓
+Sync rollback → Git
+```
+
+### Install Argo Rollouts
 ```bash
 kubectl create namespace argo-rollouts
 
