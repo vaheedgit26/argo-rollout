@@ -174,11 +174,11 @@ jobs:
 ```
 ## 🔷 🔁 5. PROMOTION PIPELINE 
 
-DEV → STAGING
+** DEV → STAGING **
 ```text
 gh pr create --base staging --head dev
 ```
-STAGING → PROD  
+`STAGING → PROD`  
 ```text
 gh pr create --base prod --head staging
 ```
@@ -193,4 +193,85 @@ Git still shows broken version ❌
 ✅ Solution:
 
 👉 Detect rollback → update Git
+
+🔧 Method 1: Argo Rollouts Notifications  
+Trigger webhook on rollback  
+
+🔧 Method 2: Controller Job  
+
+Example Kubernetes Job:  
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sync-rollback
+spec:
+  template:
+    spec:
+      containers:
+        - name: sync
+          image: alpine/git
+          command:
+            - sh
+            - -c
+            - |
+              git clone git@github.com:your-org/k8s-manifests.git
+              cd k8s-manifests
+
+              git checkout prod
+              sed -i "s|image:.*|image: stable-tag|g" rollout.yaml
+
+              git commit -am "Auto rollback sync"
+              git push
+      restartPolicy: Never
+```
+## 🔷 🔐 7. BEST PRACTICES (REAL WORLD)  
+✅ Use immutable tags  
+```text
+sha-xxxx ✔
+latest ❌
+```
+
+✅ Monitor these metrics  
+- Error rate  
+- Latency  
+- CPU/memory  
+- Crash loops  
+
+✅ Use SLO-based rollback  
+```text
+error_rate < 1%
+latency < 200ms
+```
+
+✅ Separate environments  
+```text
+dev / staging / prod branches
+```
+
+✅ Add manual approval for prod  
+## 🔷 🔥 FINAL FLOW (CRYSTAL CLEAR)  
+```text
+1. Code push
+2. CI builds image
+3. GitOps repo updated (dev)
+4. ArgoCD syncs
+5. Argo Rollouts deploys (canary)
+
+6. Prometheus checks:
+   → good → continue rollout
+   → bad → AUTO rollback
+
+7. Rollback synced to Git
+8. Promotion via PR
+```
+
+💪 🔥 Interview-Level MASTER Answer
+
+👉 If asked:  
+Q: Design a safe deployment with rollback
+```text
+I implement GitOps using ArgoCD and use Argo Rollouts for progressive delivery with canary strategy. Metrics from Prometheus are used to evaluate the rollout, and if thresholds like error rate or latency are breached, the system automatically aborts and rolls back. Additionally, I ensure rollback state is synced back to Git to maintain consistency.
+```
+
 
