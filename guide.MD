@@ -174,7 +174,7 @@ jobs:
 ```
 ## 🔷 🔁 5. PROMOTION PIPELINE 
 
-** DEV → STAGING **
+**DEV → STAGING**
 ```text
 gh pr create --base staging --head dev
 ```
@@ -268,9 +268,9 @@ dev / staging / prod branches
 
 💪 🔥 Interview-Level MASTER Answer
 
-👉 If asked:  
-Q: Design a safe deployment with rollback
-I implement GitOps using ArgoCD and use Argo Rollouts for progressive delivery with canary strategy. Metrics from Prometheus are used to evaluate the rollout, and if thresholds like error rate or latency are breached, the system automatically aborts and rolls back. Additionally, I ensure rollback state is synced back to Git to maintain consistency.
+👉 If asked: 
+Q: Design a safe deployment with rollback   
+A: I implement GitOps using ArgoCD and use Argo Rollouts for progressive delivery with canary strategy. Metrics from Prometheus are used to evaluate the rollout, and if thresholds like error rate or latency are breached, the system automatically aborts and rolls back. Additionally, I ensure rollback state is synced back to Git to maintain consistency.
 
 
 
