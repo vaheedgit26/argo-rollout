@@ -89,3 +89,30 @@ spec:
           ports:
             - containerPort: 8080
 ```
+
+🔷 🔬 2. PROMETHEUS ANALYSIS TEMPLATE   
+👉 This is the brain of auto rollback  
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: error-rate-check
+spec:
+  metrics:
+    - name: error-rate
+      interval: 30s
+      successCondition: result < 0.05
+      failureCondition: result >= 0.05
+
+      provider:
+        prometheus:
+          address: http://prometheus.monitoring.svc.cluster.local:9090
+          query: |
+            sum(rate(http_requests_total{status=~"5.."}[1m]))
+            /
+            sum(rate(http_requests_total[1m]))
+```
+🔥 What happens:
+```text
+If error rate >= 5% → rollout FAILS → AUTO ROLLBACK
+```
