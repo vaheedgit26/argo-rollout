@@ -47,3 +47,45 @@ In production, I use Argo Rollouts with canary strategy and integrate it with Pr
 
 🔥 That’s top 1% DevOps answer
 ```
+## 🔷 🥇 1. ARGO ROLLOUTS (FULL YAML)   
+👉 Replace Deployment with Rollout   
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+
+  strategy:
+    canary:
+      steps:
+        - setWeight: 20
+        - pause: { duration: 60 }
+
+        - analysis:
+            templates:
+              - templateName: error-rate-check
+
+        - setWeight: 50
+        - pause: { duration: 60 }
+
+        - analysis:
+            templates:
+              - templateName: error-rate-check
+
+  selector:
+    matchLabels:
+      app: my-app
+
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: app
+          image: 180789647333.dkr.ecr.ap-south-1.amazonaws.com/my-app:sha-abc123
+          ports:
+            - containerPort: 8080
+```
