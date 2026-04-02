@@ -136,7 +136,7 @@ Switch traffic instantly
 ✔ Auto rollback  
 👉 Industry standard = Canary   
 
-🔷 🔁 4. GITHUB ACTIONS (CI PIPELINE)  
+## 🔷 🔁 4. GITHUB ACTIONS (CI PIPELINE)  
 🔥 Build → Push → Update GitOps  
 ```yaml
 name: CI Pipeline
