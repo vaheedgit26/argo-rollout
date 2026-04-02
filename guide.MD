@@ -193,12 +193,35 @@ Git still shows broken version ❌
 ✅ Solution:
 
 👉 Detect rollback → update Git
+## 🔶 Triggered via repository_dispatch
+```yaml
+name: Rollback Pipeline
+
+on:
+  repository_dispatch:
+    types: [rollback]
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Revert last commit
+        run: |
+          git config user.name "ci-bot"
+          git config user.email "ci-bot@company.com"
+
+          git revert HEAD --no-edit
+          git push origin prod
+```
 
 🔧 Method 1: Argo Rollouts Notifications  
 Trigger webhook on rollback  
 
 🔧 Method 2: Controller Job  
-
 Example Kubernetes Job:  
 ```yaml
 apiVersion: batch/v1
@@ -271,6 +294,29 @@ dev / staging / prod branches
 👉 If asked:    
 Q: Design a safe deployment with rollback ?          
 A: I implement GitOps using ArgoCD and use Argo Rollouts for progressive delivery with canary strategy. Metrics from Prometheus are used to evaluate the rollout, and if thresholds like error rate or latency are breached, the system automatically aborts and rolls back. Additionally, I ensure rollback state is synced back to Git to maintain consistency.
+
+## 🔷 🔥 FULL FLOW (CRYSTAL CLEAR)   
+
+```text
+1. Developer pushes code
+2. CI builds image (sha-xyz)
+3. Pipeline updates DEV branch
+4. ArgoCD deploys to DEV
+
+5. Create PR → dev → staging
+6. QA tests
+7. Merge PR
+8. ArgoCD deploys to STAGING
+
+9. Create PR → staging → prod
+10. Approval required
+11. Merge PR
+12. ArgoCD deploys to PROD
+
+13. If issue → revert commit
+14. ArgoCD rolls back automatically
+```
+
 
 
 
