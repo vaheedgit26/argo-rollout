@@ -7,6 +7,7 @@ Perfect — let’s build a production-grade, end-to-end GitOps system with:
 - GitOps repo updates  
 - Sync back to Git after rollback   
 This is exactly how top companies design safe delivery systems 🔥   
+
 ```text
 Developer push
    ↓
