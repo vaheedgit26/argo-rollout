@@ -270,8 +270,7 @@ dev / staging / prod branches
 
 👉 If asked:  
 Q: Design a safe deployment with rollback
-```text
 I implement GitOps using ArgoCD and use Argo Rollouts for progressive delivery with canary strategy. Metrics from Prometheus are used to evaluate the rollout, and if thresholds like error rate or latency are breached, the system automatically aborts and rolls back. Additionally, I ensure rollback state is synced back to Git to maintain consistency.
-```
+
 
 
