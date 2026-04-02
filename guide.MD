@@ -90,7 +90,7 @@ spec:
             - containerPort: 8080
 ```
 
-🔷 🔬 2. PROMETHEUS ANALYSIS TEMPLATE   
+## 🔷 🔬 2. PROMETHEUS ANALYSIS TEMPLATE   
 👉 This is the brain of auto rollback  
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -116,3 +116,81 @@ spec:
 ```text
 If error rate >= 5% → rollout FAILS → AUTO ROLLBACK
 ```
+
+## 🔷 🔄 3. BLUE-GREEN vs CANARY
+🟦 Blue-Green (simple)   
+```text
+Blue = current
+Green = new
+Switch traffic instantly
+```
+✔ Fast rollback  
+❌ Risky (all traffic at once)  
+
+🟨 Canary (recommended)  
+```text
+10% → 50% → 100%
+```
+✔ Safe  
+✔ Gradual  
+✔ Auto rollback  
+👉 Industry standard = Canary   
+
+🔷 🔁 4. GITHUB ACTIONS (CI PIPELINE)  
+🔥 Build → Push → Update GitOps  
+```yaml
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build -t my-app:${GITHUB_SHA} .
+
+      - name: Push to ECR
+        run: |
+          docker tag my-app:${GITHUB_SHA} 180789647333.dkr.ecr.ap-south-1.amazonaws.com/my-app:${GITHUB_SHA}
+          docker push 180789647333.dkr.ecr.ap-south-1.amazonaws.com/my-app:${GITHUB_SHA}
+
+      - name: Update GitOps repo (dev)
+        run: |
+          git clone git@github.com:your-org/k8s-manifests.git
+          cd k8s-manifests
+
+          git checkout dev
+          sed -i "s|image:.*|image: ...:${GITHUB_SHA}|g" rollout.yaml
+
+          git commit -am "Deploy ${GITHUB_SHA} to dev"
+          git push origin dev
+```
+## 🔷 🔁 5. PROMOTION PIPELINE 
+
+DEV → STAGING
+```text
+gh pr create --base staging --head dev
+```
+STAGING → PROD  
+```text
+gh pr create --base prod --head staging
+```
+
+## 🔷 🔄 6. AUTO ROLLBACK SYNC BACK TO GIT (ADVANCED 🔥)  
+
+🚨 Problem:
+```text
+Cluster rolled back
+Git still shows broken version ❌
+```
+✅ Solution:
+
+👉 Detect rollback → update Git
+
